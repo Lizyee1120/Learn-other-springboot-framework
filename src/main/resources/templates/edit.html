@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update User Detail</title>
+</head>
+<body>
+    <h2>Update User Detail</h2>
+    <form id="editForm" enctype="multipart/form-data">
+        <input type="hidden" id="userId" name="userId" th:value="${user?.id}" />
+
+        <label for="username">Username:</label><br>
+        <input type="text" id="username" name="username" th:value="${user != null} ? ${user.username} : ''" required><br>
+        <br>
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email" th:value="${user != null} ? ${user.email} : ''" required><br>
+        
+        <input type="hidden" id="password" name="password" th:value="${user != null} ? ${user.password} : ''" required><br>
+        
+        <button id="saveButton">Save</button>
+        <button id="backButton"><a href="../user_list">Back</a></button>
+    </form>
+
+    <!-- <script src="editing.js"></script> -->
+
+    <script>
+        function saveUser(event) {
+            event.preventDefault(); // Prevent default form submission behavior
+            var form = document.getElementById("editForm");
+            var formData = new FormData(form);
+            var userId = parseInt(document.getElementById("userId").value); // Parse userId as integer
+    
+            fetch('/edit/' + userId, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('User details updated successfully');
+                    window.location.href = '/edit/' + userId;
+                } else {
+                    alert('Failed to update user details');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while updating user details');
+            });
+        }
+    
+        document.getElementById("saveButton").addEventListener("click", saveUser);
+    </script>
+    
+</body>
+</html>
